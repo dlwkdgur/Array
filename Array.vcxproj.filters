@@ -23,5 +23,8 @@
     <ClCompile Include="array_test.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="vector_study.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

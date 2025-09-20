@@ -131,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="array_test.cpp" />
+    <ClCompile Include="vector_study.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
