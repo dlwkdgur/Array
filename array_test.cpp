@@ -17,4 +17,8 @@ int main() {
 	cout << arr.pop() << endl;
 
 	arr.list();
+
+	cout << "arr[0] : "<< arr[0] << endl;
+
+	system("pause");
 }
