@@ -6,69 +6,41 @@ template <typename type>
 class Array {
 private:
 	int count;
-public :
+	int capacity = 10;
 	//배열 생성, 배열 사이즈 생성
 	type* array;
-	Array() {
-		count = 0;
-		array = nullptr;
-	}
-	~Array() {
-		delete[] array;
-	}
+public:
+
+	//생성자
+	Array();
+	Array(const Array& other);
+
+	//소멸자
+	~Array();
+
+	//복사 대입 연산자
+	Array& operator= (const Array& other);
+
 	//메소드
 	//원소의 수
-	int size() { return count; }
+	int size();
 	//현재 array가 비었냐
-	bool empty() { return (count == 0); }
+	bool empty();
 	//첫 번째 원소를 반환함
-	type front() { return array[0]; }
+	type front();
 	//마지막 원소를 반환함
-	type back() { return array[count - 1]; }
+	type back();
 	//원소들 나열
-	void list() {
-		for (int i = 0; i < count; i++) {
-			cout << array[i] << "\t";
-		}
-		cout << endl;
-	}
+	void list();
 	//새 원소를 배열의 마지막 위치에 추가함(크기가 1증가함)
-	void add(type value) {
-		type* before = new type[count + 1];
-		for (int i = 0; i < count; i++) {//값을 대입함
-			*(before + i) = *(array + i);
-		}
-		count++;
-		before[count - 1] = value;
-		delete[] array;
-		array = before;
-	}
+	void add(type value);
 	//벡터의 마지막 원소를 제거(크기가 1감소)
-	type pop() {
-		if (empty()) throw out_of_range("Array is Empty");
-		
-		type value = array[count - 1];
-		count--;
-		type* before = new type[count];
-		for (int i = 0; i < count; i++) {
-			before[i] = array[i];
-		}
-
-		delete[] array;
-		array = before;
-		return value;
-	}
+	type pop();
 
 	//[]연산자 오버로딩
-	type& operator[] (int index) {
-		if (index < 0 || index >= count) throw out_of_range("Index Out of Range");
-
-		return array[index];
-	}
-	const type& operator[] (int index) const {
-		if (index < 0 || index >= count) throw out_of_range("Index Out of Range");
-
-		return array[index];
-	}
+	type& operator[] (int index);
+	const type& operator[] (int index) const;
 
 };
+
+#include "Array.ipp";
