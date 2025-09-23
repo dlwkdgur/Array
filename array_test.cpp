@@ -30,5 +30,12 @@ int main() {
 	cout << endl;
 	array.add(10);
 	array.list();
+
+	Array<int> asdf = { 10, 20, 30 };
+	asdf.list();
+	for (int value : asdf) {
+		cout << "test" << value;
+	}
+	cout << endl;
 	system("pause");
 }

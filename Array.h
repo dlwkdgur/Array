@@ -14,12 +14,14 @@ public:
 	//생성자
 	Array();
 	Array(const Array& other);
+	Array(initializer_list<type> list);
 
 	//소멸자
 	~Array();
 
 	//복사 대입 연산자
 	Array& operator= (const Array& other);
+	Array& operator= (initializer_list<type> list);
 
 	//메소드
 	//원소의 수
@@ -40,6 +42,13 @@ public:
 	//[]연산자 오버로딩
 	type& operator[] (int index);
 	const type& operator[] (int index) const;
+
+	//iterator타입 정의 begin, end메소드
+	type* begin();
+	type* end();
+
+	const type* begin() const;
+	const type* end() const;
 
 };
 

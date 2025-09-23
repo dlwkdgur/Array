@@ -1,3 +1,10 @@
+int capacity_set(int count) {
+	int capacity = 10;
+	while (capacity < count) {
+		capacity += capacity;
+	}
+	return capacity;
+}
 //»ı¼ºÀÚ
 template <typename type>
 Array<type>::Array() {
@@ -11,6 +18,16 @@ Array<type>::Array(const Array& other) {
 	array = new type[capacity];
 	for (int i = 0; i < count; i++) {
 		array[i] = other.array[i];
+	}
+}
+template<typename type>
+Array<type>::Array(initializer_list<type> list) {
+	count = list.size();
+	capacity = capacity_set(count);
+	array = new type[capacity];
+	int i = 0;
+	for (type value : list) {
+		array[i++] = value;
 	}
 }
 
@@ -32,6 +49,18 @@ Array<type>& Array<type>:: operator= (const Array & other) {
 		array[i] = other.array[i];
 	}
 
+	return *this;
+}
+template<typename type>
+Array<type>& Array<type>:: operator= (initializer_list<type> list) {
+	delete[] array;
+	count = list.size();
+	capacity = capacity_set(count);
+	array = new type[capacity];
+	int i = 0;
+	for (type value : list) {
+		array[i++] = value;
+	}
 	return *this;
 }
 
@@ -99,3 +128,13 @@ const type& Array<type>:: operator[] (int index) const {
 
 	return array[index];
 }
+
+template<typename type>
+type* Array<type>::begin() { return array; }
+template<typename type>
+type* Array<type>::end() { return array + count; }
+
+template<typename type>
+const type* Array<type>::begin() const { return array; }
+template<typename type>
+const type* Array<type>::end() const { return array + count; }
