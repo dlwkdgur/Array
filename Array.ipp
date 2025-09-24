@@ -9,13 +9,25 @@ int capacity_set(int count) {
 template <typename type>
 Array<type>::Array() {
 	count = 0;
-	array = new type[capacity];
+	fpMAlloc = malloc;
+	fpFree = [](void* p, size_t) {free(p); };
+	array = static_cast<type*>(fpMAlloc(sizeof(type) * capacity));
+}
+template <typename type>
+Array<type>::Array(int i) {
+	count = i;
+	capacity = capacity_set(count);
+	fpMAlloc = malloc;
+	fpFree = [](void* p, size_t) {free(p); };
+	array = static_cast<type*>(fpMAlloc(sizeof(type) * capacity));
 }
 template <typename type>
 Array<type>::Array(const Array& other) {
 	count = other.count;
 	capacity = other.capacity;
-	array = new type[capacity];
+	fpMAlloc = other.fpMAlloc;
+	fpFree = other.fpFree;
+	array = static_cast<type*>(fpMAlloc(sizeof(type) * capacity));
 	for (int i = 0; i < count; i++) {
 		array[i] = other.array[i];
 	}
@@ -24,27 +36,38 @@ template<typename type>
 Array<type>::Array(initializer_list<type> list) {
 	count = list.size();
 	capacity = capacity_set(count);
-	array = new type[capacity];
+	fpMAlloc = malloc;
+	fpFree = [](void* p, size_t) {free(p); };
+	array = static_cast<type*>(fpMAlloc(sizeof(type) * capacity));
 	int i = 0;
 	for (type value : list) {
 		array[i++] = value;
 	}
 }
+template<typename type>
+Array<type>::Array(void* (*fnMAlloc)(size_t), void (*fnFree)(void*, size_t)) {
+	count = 0;
+	fpMAlloc = fnMAlloc;
+	fpFree = fnFree;
+	array = static_cast<type*>(fpMAlloc(sizeof(type) * capacity));
+}
 
 //소멸자
 template <typename type>
 Array<type>::~Array() {
-	delete[] array;
+	if (array) fpFree(array, sizeof(type) * capacity);
 }
 
 //복사 대입 연산자
 template <typename type>
 Array<type>& Array<type>:: operator= (const Array & other) {
 	if (this == &other) return *this;
-	delete[] array;
+	fpFree(array, sizeof(type) * capacity);
 	count = other.count;
 	capacity = other.capacity;
-	array = new type[capacity];
+	fpMAlloc = other.fpMAlloc;
+	fpFree = other.fpFree;
+	array = static_cast<type*>(fpMAlloc(sizeof(type)) * capacity);
 	for (int i = 0; i < count; i++) {
 		array[i] = other.array[i];
 	}
@@ -53,10 +76,10 @@ Array<type>& Array<type>:: operator= (const Array & other) {
 }
 template<typename type>
 Array<type>& Array<type>:: operator= (initializer_list<type> list) {
-	delete[] array;
+	fpFree(array, sizeof(type) * capacity);
 	count = list.size();
 	capacity = capacity_set(count);
-	array = new type[capacity];
+	array = static_cast<type*>(fpMAlloc(sizeof(type)) * capacity);
 	int i = 0;
 	for (type value : list) {
 		array[i++] = value;
@@ -90,13 +113,13 @@ template <typename type>
 void Array<type>:: add(type value) {
 	if (capacity == count) {//배열의 크기를 늘려야 하는 경우
 		capacity += capacity;
-		type* before = new type[capacity];
+		type* before = static_cast<type*>(fpMAlloc(sizeof(type) * capacity));
 		for (int i = 0; i < count; i++) {//값을 대입함
 			*(before + i) = *(array + i);
 		}
 		before[count] = value;
 		count++;
-		delete[] array;
+		fpFree(array, sizeof(type) * capacity);
 		array = before;
 	}
 	else {//늘리지 않아도 되는 경우

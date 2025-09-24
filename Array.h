@@ -9,12 +9,17 @@ private:
 	int capacity = 10;
 	//배열 생성, 배열 사이즈 생성
 	type* array;
+
+	void* (*fpMAlloc)(size_t);
+	void (*fpFree)(void*, size_t);
 public:
 
 	//생성자
 	Array();
+	Array(int i);
 	Array(const Array& other);
 	Array(initializer_list<type> list);
+	Array(void* (*fnMAlloc)(size_t), void (fnFree)(void*, size_t));
 
 	//소멸자
 	~Array();
