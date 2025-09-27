@@ -55,7 +55,14 @@ Array<type>::Array(void* (*fnMAlloc)(size_t), void (*fnFree)(void*, size_t)) {
 //소멸자
 template <typename type>
 Array<type>::~Array() {
-	if (array) fpFree(array, sizeof(type) * capacity);
+	if (array) {
+		if constexpr (!is_trivially_destructible<type> ::value) {//클래스 타입을 경우 생성자 호출
+			for (int i = 0; i < count; i++) {
+				array[i].~type();//소멸자 호출
+			}
+		}
+		fpFree(array, sizeof(type) * capacity);
+	}
 }
 
 //복사 대입 연산자
